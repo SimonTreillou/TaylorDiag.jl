@@ -9,7 +9,8 @@
 You first need to add the package to your library.
 
 ```julia
-]add https://github.com/SimonTreillou/TaylorDiagram.jl.git
+using Pkd
+Pkg.add("https://github.com/SimonTreillou/TaylorDiagram.jl.git")
 using TaylorDiagram
 ``` 
 
