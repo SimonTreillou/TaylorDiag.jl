@@ -8,8 +8,8 @@ end;
 @testset "Mean" begin
     C1 = [1.0, 1.0, 1.0]
     C2 = [1.0, 0.0, 0.0, 1.0]
-    @test mean(C1) == 1.0
-    @test mean(C2) == 0.5
+    @test TaylorDiag.mean(C1) == 1.0
+    @test TaylorDiag.mean(C2) == 0.5
 end;
 
 @testset "RMSD" begin

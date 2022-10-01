@@ -13,7 +13,7 @@ end
 Compute the standard deviation of the collection C.
 """
 function STD(C::AbstractArray)
-    sqrt.( sum( (C.-mean(C)).^2 ) ./ length(C) )
+    sqrt.( sum( (C.-TaylorDiag.mean(C)).^2 ) ./ length(C) )
 end
 
 """
@@ -22,7 +22,7 @@ end
 Compute the root mean-squared deviation between reference collection Cr and C.
 """
 function RMSD(Cr::AbstractArray,C::AbstractArray)
-    sqrt.( sum( ( C.-mean(C) .- Cr .+ mean(Cr)).^2 ) ./ length(C))
+    sqrt.( sum( ( C.- TaylorDiag.mean(C) .- Cr .+ TaylorDiag.mean(Cr)).^2 ) ./ length(C))
 end
 
 """
@@ -39,5 +39,5 @@ In this case, `correlation=1.0000000000000002`, or `correlation=1+2e-16`, being 
 
 """
 function COR(Cr,C)
-    round(sum( (C.-mean(C)) .* (Cr.-mean(Cr)) ) ./ (length(C) .* STD(C) .* STD(Cr)),digits=15)
+    round(sum( (C.- TaylorDiag.mean(C)) .* (Cr.- TaylorDiag.mean(Cr)) ) ./ (length(C) .* STD(C) .* STD(Cr)),digits=15)
 end
