@@ -42,7 +42,7 @@ names = ["Data1", "Data2", "Data3"]
 taylordiagram(S,R,C,names)
 ```
 
-![plot](./tutorials/tutorial-taylor-diagram.png)
+![plot](./tutorial-taylor-diagram.png)
 
 ## Roadmap
 
