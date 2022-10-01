@@ -1,5 +1,11 @@
 module TaylorDiag
 
-# Write your package code here.
+export taylordiagram
+include("taylor.jl")
+
+export STD
+export COR
+export RMSD
+include("stats.jl")
 
 end

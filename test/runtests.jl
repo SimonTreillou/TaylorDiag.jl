@@ -1,6 +1,11 @@
 using TaylorDiag
 using Test
+using Random
 
-@testset "TaylorDiag.jl" begin
-    # Write your tests here.
+@testset "Statistics" begin
+    include("test-statistics.jl")
+end
+
+@testset "Plotting" begin
+    include("test-plotting.jl")
 end
