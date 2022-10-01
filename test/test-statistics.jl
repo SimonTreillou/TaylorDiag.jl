@@ -19,7 +19,7 @@ end;
     C3 = [1.0, 2.0, 3.0]
     @test RMSD(Cr,C1) == 0.
     @test RMSD(Cr,C2) == 0.
-    @test RMSD(Cr,C2) == 0.816496580927726
+    @test RMSD(Cr,C3) == 0.816496580927726
 end;
 
 @testset "Correlation coefficient" begin
