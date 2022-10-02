@@ -22,8 +22,9 @@ Taylor (2001) then showed that these scores are related using the following equa
 
 $$E'^2 = \sigma^2_f + \sigma_r^2 - 2 \sigma_f \sigma_r R$$
 
-![plot](./Taylor2001-fig1.png)
-$$From \space Taylor \space (2001) - Figure  \space 1$$
+![plot](Taylor2001-fig1.png)
+
+$From \space Taylor \space (2001) - Figure  \space 1$
 
 ## How to use
 
