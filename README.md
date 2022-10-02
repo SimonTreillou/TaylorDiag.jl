@@ -4,21 +4,42 @@
 
 ## What is a Taylor diagram
 
+A Taylor diagram is a diagram designed by Karl E. Taylor [[1]](#1),  indicating the realism of models/representations. It is a really powerful tool because of the information displayed in a single diagram: the correlation coefficient (quantifying the  pattern similarity between reference and model), the RMSE (quantifying the difference, without differentiating difference due to pattern and difference due to amplitude) and standard deviation (quantifying the amplitude and deviation).
+
+Given $f$ and $r$ two variables, $r$ being the reference, and $\sigma_f$ and $\sigma_r$ their respective standard deviations, the correlation coefficient R reads as : 
+
+$$ R = \frac{ \frac{1}{N} \sum_n (f_n - \bar{f}) (r_n - \bar{r})}{\sigma_f \sigma_r}$$ 
+
+The RMS difference E reads as :
+
+$$E = [ \frac{1}{N} \sum_n (f_n - r_n)^2 ]^{1/2}$$
+
+and can be separated in two parts : $E^2 = \bar{E}^2 + E'^2$. $\bar{E} = \bar{f} - \bar{r}$ is the overall bias and the centered pattern RMS difference $E'$ is :
+
+$$\sqrt{E'} = \frac{1}{N} \sum_n [(f_n - \bar{f}) - (r_n - \bar{r})]^2$$
+
+Taylor (2001) then showed that these scores are related using the following equation :
+
+$$E'^2 = \sigma^2_f + \sigma_r^2 - 2 \sigma_f \sigma_r R$$
+
+![plot](./Taylor2001-fig1.png)
+$$From \space Taylor \space (2001) - Figure  \space 1$$
+
 ## How to use
 
 You first need to add the package to your library.
 
 ```julia
 using Pkd
-Pkg.add("https://github.com/SimonTreillou/TaylorDiagram.jl.git")
-using TaylorDiagram
+Pkg.add("https://github.com/SimonTreillou/TaylorDiag.jl.git")
+using TaylorDiag
 ``` 
 
 ## Example
 
 ```julia
 using Random
-using TaylorDiagram
+using TaylorDiag
 
 # We first build observations (e.g. reference) using random distribution
 obs = 10*rand(10)
@@ -44,6 +65,8 @@ taylordiagram(S,R,C,names)
 
 ![plot](./tutorial-taylor-diagram.png)
 
+
+
 ## Roadmap
 
 - [x] Statistics tests
@@ -63,4 +86,7 @@ See contributor's guide badge for more informations: ColPrac: Contributor's Guid
 
 ## References
 
-Taylor, Karl E. « Summarizing Multiple Aspects of Model Performance in a Single Diagram ». Journal of Geophysical Research: Atmospheres 106, nᵒ D7 (2001): 7183‑92. https://doi.org/10.1029/2000JD900719.
+<a id="1">[1]</a> 
+Taylor, K. E. (2001). 
+Summarizing Multiple Aspects of Model Performance in a Single Diagram
+Journal of Geophysical Research: Atmospheres 106, nᵒ D7 (2001): 7183‑92. https://doi.org/10.1029/2000JD900719.
