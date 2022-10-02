@@ -4,7 +4,7 @@
 
 ## What is a Taylor diagram
 
-A Taylor diagram is a diagram designed by Karl E. Taylor [[1]](#1),  indicating the realism of models/representations. It is a really powerful tool because of the information displayed in a single diagram: the correlation coefficient (quantifying the  pattern similarity between reference and model), the RMSE (quantifying the difference, without differentiating difference due to pattern and difference due to amplitude) and standard deviation (quantifying the amplitude and deviation).
+A Taylor diagram is a diagram designed by Karl E. Taylor [[1]](#1),  indicating the realism of models/representations. It is a really powerful tool because of the information displayed in a single diagram: the correlation coefficient (quantifying the  pattern similarity between reference and model), the RMSE (quantifying the difference, without differentiating difference due to pattern and difference due to amplitude) and standard deviation (quantifying the amplitude and deviation). This diagram is well-known in earth sciences and climate sciences (e.g. oceanography, meteorology) but would benefit from being known in others scientific fields.
 
 Given $f$ and $r$ two variables, $r$ being the reference, and $\sigma_f$ and $\sigma_r$ their respective standard deviations, the correlation coefficient R reads as : 
 
@@ -71,12 +71,12 @@ taylordiagram(S,R,C,names)
 ## Roadmap
 
 - [x] Statistics tests
-- [ ] Write functions descriptions
+- [x] Write functions descriptions
 - [x] Add reference
-- [ ] Write quick-quick documentation on the README
-- [ ] Clean-up
-- [ ] List what next
-- [ ] Add options
+- [x] Write quick-quick documentation on the README
+- [x] Clean-up
+- [ ] List what next: see reference
+- [x] Add options
 
 ## Contributing
 

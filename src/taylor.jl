@@ -1,52 +1,49 @@
-function taylor_verification(Cr,C)
-    RMSD(Cr,C).^2 .- STD(Cr).^2 .- STD(C).^2 .+ 2*STD(Cr)*STD(C)*COR(Cr,C)
-end
+"""
+    taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
 
-function taylordiagram(S,R,C,names)
+Compute and plot the Taylor diagram.
+"""
+function taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
 
+    # Defining polar coordinates
     rho   = S
-    theta = real.(acos.(C))
+    theta = to_polar(C)
 
     # Defining constants: upper bound of STD-axis
     limSTD   = findmax(S)[1]*2
 
     # Defining constants: Correlation ticks
     Cticks  = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99]
-    CticksP = real.(acos.(Cticks))
+    CticksP = to_polar(Cticks)
 
-
-    #
-    # PLOTTING
-    #
-    fig = plot(size=(600,600),dpi=600)
-    plot!(grid=false,leg=false)
+    # Plotting the figure
+    fig = plot(size=(figsize,figsize),dpi=dpi,grid=false,leg=false)
     ylims!((0., limSTD*1.01))
-    xlims!((0., limSTD*1.01))
+    xlims!((0., limSTD*1.02))
     ylabel!("Standard deviation")
 
-    # Plotting points
-    t     = -200:(pi/200):(pi/2)
-    for i in 1:length(theta)
-        scatter!([cos.(theta[i]).*rho[i]], [sin.(theta[i]).*rho[i]],color=:black)
-        annotate!(cos.(theta[i]).*rho[i]+0.02*limSTD,sin.(theta[i]).*rho[i]+0.02*limSTD,names[i],8)
+    # Plotting reference and model points
+    for i in eachindex(theta)
+        scatter!([cos.(theta[i]).*rho[i]], [sin.(theta[i]).*rho[i]],color=pointcolor)
+        annotate!(cos.(theta[i]).*rho[i]+0.02*limSTD,sin.(theta[i]).*rho[i]+0.02*limSTD,names[i],pointfontsize)
     end
 
     # Correlation circle and lines
-    plot!(limSTD.*cos.(t),limSTD.*sin.(t),linecolor=:black)
-    for i in 1:length()
+    t = -200:(pi/200):(pi/2)
+    plot!(limSTD.*cos.(t), limSTD.*sin.(t), linecolor=correlationcolor)
+    for i in eachindex(Cticks)
         x = 0:0.01:cos(CticksP[i])*limSTD
-        plot!(x,x.*tan(Cis[i]),linecolor="black",linestyle=:dashdot,alpha=0.3)
-        if Ctiks[i]== 0.
-            annotate!(cos(Cis[i])*limSTD*1.01+0.02*limSTD, sin(Cis[i])*limSTD*1.01, string(Cticks[i]),7)
+        plot!(x,x.*tan(CticksP[i]),linecolor=correlationcolor,linestyle=:dashdot,alpha=0.3)
+        if Cticks[i]== 0.
+            annotate!(cos(CticksP[i])*limSTD*1.01+0.02*limSTD, sin(CticksP[i])*limSTD*1.01, string(Cticks[i]),7)
         else
-            annotate!(cos(Cis[i])*limSTD*1.01, cos(Cis[i])*limSTD*1.01*tan(Cis[i]),text(string(Cticks[i]), :black, :left, 7))
+            annotate!(cos(CticksP[i])*limSTD*1.01, cos(CticksP[i])*limSTD*1.01*tan(CticksP[i]),text(string(Cticks[i]), correlationcolor, :left, 7))
         end
     end
-    annotate!(cos(pi/4)*limSTD*1.07,sin(pi/4)*limSTD*1.07, Plots.text("Correlation", 13, :dark, rotation = -45 ))
+    annotate!(cos(pi/4)*limSTD*1.07,sin(pi/4)*limSTD*1.07, Plots.text("Correlation", 13, correlationcolor, rotation = -45 ))
 
     # RMSD circles
     maxRMS = sqrt(S[1]^2 + limSTD^2)
-    freRMS = 5
     angRMS = atan(S[1]/limSTD)+pi/2
     t     = 0:(pi/200):(2*pi)
     rx = cos.(theta[1]).*rho[1]
@@ -61,12 +58,11 @@ function taylordiagram(S,R,C,names)
     end
 
     fig
-
 end
 
 
-function taylordiagram(S,R,C)
+function taylordiagram(S,R,C,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
     N = ["Obs"]
     for i in 2:length(S); push!(N,"Mod"*string(i)); end
-    taylordiagram(S,R,C,N)
+    taylordiagram(S,R,C,N,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
 end
