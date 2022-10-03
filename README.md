@@ -57,11 +57,11 @@ R = [RMSD(obs,obs),RMSD(obs,mod), RMSD(obs,mod2)]
 C = [COR(obs,obs),COR(obs,mod),COR(obs,mod2)]
 
 # We then plot the Taylor diagram, here without special names added
-taylordiagram(S,R,C)
+taylordiagram(S,C)
 
 # Here with special names added
 names = ["Data1", "Data2", "Data3"]
-taylordiagram(S,R,C,names)
+taylordiagram(S,C,names)
 ```
 
 ![plot](./tutorial-taylor-diagram.png)

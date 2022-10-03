@@ -61,8 +61,8 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector;figsize=6
 end
 
 
-function taylordiagram(S,R,C,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+function taylordiagram(S,C,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
     N = ["Obs"]
     for i in 2:length(S); push!(N,"Mod"*string(i)); end
-    taylordiagram(S,R,C,N,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+    taylordiagram(S,C,N,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
 end
