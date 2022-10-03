@@ -31,7 +31,7 @@ $From \space Taylor \space (2001) - Figure  \space 1$
 You first need to add the package to your library.
 
 ```julia
-using Pkd
+using Pkg
 Pkg.add("https://github.com/SimonTreillou/TaylorDiag.jl.git")
 using TaylorDiag
 ``` 
@@ -59,9 +59,15 @@ C = [COR(obs,obs),COR(obs,mod),COR(obs,mod2)]
 # We then plot the Taylor diagram, here without special names added
 taylordiagram(S,C)
 
-# Here with special names added
+# Here with special names added (plot not shown)
 names = ["Data1", "Data2", "Data3"]
 taylordiagram(S,C,names)
+
+# Here with automatic computation of the standard deviations and correlation coefficients (plot not shown)
+taylordiagram([obs,mod,mod2])
+
+# Here with automatic computation of the standard deviations and correlation coefficients, and special names (plot not shown)
+taylordiagram([obs,mod,mod2],names)
 ```
 
 ![plot](./tutorial-taylor-diagram.png)
