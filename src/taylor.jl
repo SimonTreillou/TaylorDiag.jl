@@ -1,9 +1,27 @@
 """
-    taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+    taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector{String};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+    taylordiagram(S::AbstractArray,C::AbstractArray;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+    taylordiagram(Cs::Union{Vector{Vector{Float64}}, Vector{Vector{Float32}}, Vector{Vector{Float16}}, Vector{Vector{Int64}}}, names::Vector{String};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+    taylordiagram(Cs::Union{Vector{Vector{Float64}}, Vector{Vector{Float32}}, Vector{Vector{Float16}}, Vector{Vector{Int64}}};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
 
-Compute and plot the Taylor diagram.
+
+Compute and plot the Taylor diagram. 4 different versions of the function are available :
+- taylordiagram(S,C,N) plots the standard deviations `S` and correlation coefficients `C` with associated names `N`
+- taylordiagram(S,C) plots the standard deviations `S` and correlation coefficients `C` with names "Obs" and "Mod1..i"
+- taylordiagram(Cs) plots the Taylor diagram for the collections Cs=[Cr, C1, C2, ...] with names "Obs" and "Mod1..i" and compute standard deviations and correlation coefficients
+- taylordiagram(Cs,N) plots the Taylor diagram for the collections Cs=[Cr, C1, C2, ...] with associated names `N` and compute standard deviations and correlation coefficients
+
+# Options
+
+- `figsize=600` : size of the figure
+- `dpi=600` : dpi of the figure (Dots Per Inch)
+- `pointcolor=:black` : color of the scattered points
+- `pointfontsize=8` : font size of the names of the points
+- `correlationcolor=:black` : color associated with correlation coefficients (dashed lines, 1/4-circle, etc.)
+- `freRMS=5` : frequency of RMSD lines (grey circles)
+
 """
-function taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
 
     # Defining polar coordinates
     rho   = S
@@ -61,8 +79,26 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector;figsize=6
 end
 
 
-function taylordiagram(S,C,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+function taylordiagram(S::AbstractArray,C::AbstractArray;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
     N = ["Obs"]
-    for i in 2:length(S); push!(N,"Mod"*string(i)); end
+    for i in 2:length(S); push!(N,"Mod"*string(i-1)); end
     taylordiagram(S,C,N,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
 end
+
+
+function taylordiagram(Cs::Union{Vector{Vector{Float64}}, Vector{Vector{Float32}}, Vector{Vector{Float16}}, Vector{Vector{Int64}}}, names::Vector{String};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+    S = STD.(Cs)
+    C = [COR(Cs[1],Cs[i]) for i in eachindex(Cs)]
+
+    taylordiagram(S,C,names,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+end
+
+
+function taylordiagram(Cs::Union{Vector{Vector{Float64}}, Vector{Vector{Float32}}, Vector{Vector{Float16}}, Vector{Vector{Int64}}};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+    S = STD.(Cs)
+    C = [COR(Cs[1],Cs[i]) for i in eachindex(Cs)]
+
+    taylordiagram(S,C,figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5)
+end
+    
+    
