@@ -51,7 +51,6 @@ mod2 = obs + rand(10)*2
 
 # We compute standard deviations (S), root mean squared deviations (R)
 # and correlations (C)
-# Note that .... equation
 S = [STD(obs),STD(mod), STD(mod2)]
 R = [RMSD(obs,obs),RMSD(obs,mod), RMSD(obs,mod2)]
 C = [COR(obs,obs),COR(obs,mod),COR(obs,mod2)]
@@ -63,10 +62,12 @@ taylordiagram(S,C)
 names = ["Data1", "Data2", "Data3"]
 taylordiagram(S,C,names)
 
-# Here with automatic computation of the standard deviations and correlation coefficients (plot not shown)
+# Here with automatic computation of the standard deviations 
+# and correlation coefficients (plot not shown)
 taylordiagram([obs,mod,mod2])
 
-# Here with automatic computation of the standard deviations and correlation coefficients, and special names (plot not shown)
+# Here with automatic computation of the standard deviations 
+# and correlation coefficients, and special names (plot not shown)
 taylordiagram([obs,mod,mod2],names)
 ```
 
@@ -81,8 +82,9 @@ taylordiagram([obs,mod,mod2],names)
 - [x] Add reference
 - [x] Write quick-quick documentation on the README
 - [x] Clean-up
+- [x] Add plotting options
 - [ ] List what next: see reference
-- [x] Add options
+
 
 ## Contributing
 
