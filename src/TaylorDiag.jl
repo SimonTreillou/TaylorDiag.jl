@@ -13,6 +13,7 @@ include("stats.jl")
 
 export to_polar
 export taylor_verification
+export normalize_std
 include("utils.jl")
 
 end

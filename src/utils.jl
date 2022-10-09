@@ -15,3 +15,12 @@ Function made to project a C cartesian collection (correlation coefficients) to 
 function to_polar(C::AbstractArray)
     real.(acos.(C))
 end
+
+"""
+    normalize_std(S::AbstractArray)
+
+Normalize the standard deviation collection with first STD (by default, the observations STD).
+"""
+function normalize_std(S::AbstractArray)
+    [S[i]/S[1] for i in eachindex(S)] # by default, S[1] is the standard deviation of observations
+end
