@@ -1,6 +1,7 @@
 # TaylorDiag
 
 [![Build Status](https://github.com/SimonTreillou/TaylorDiag.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/SimonTreillou/TaylorDiag.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
 
 ## What is a Taylor diagram
 
@@ -83,6 +84,10 @@ taylordiagram([obs,mod,mod2],names)
 - [x] Write quick-quick documentation on the README
 - [x] Clean-up
 - [x] Add plotting options
+- [x] Normalized plot
+- [ ] 180° plot
+- [ ] New skill scores from Taylor 2001
+- [ ] Add RMSD on the plot
 - [ ] List what next: see reference
 
 
@@ -90,7 +95,7 @@ taylordiagram([obs,mod,mod2],names)
 
 Contributions are welcome. Please make a pull request so the community can enjoy it!
 
-See contributor's guide badge for more informations: ColPrac: Contributor's Guide on Collaborative Practices for Community Packages.
+See contributor's guide badge for more informations.
 
 
 ## References
