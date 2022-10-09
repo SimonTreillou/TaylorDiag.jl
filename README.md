@@ -33,7 +33,7 @@ You first need to add the package to your library.
 
 ```julia
 using Pkg
-Pkg.add("https://github.com/SimonTreillou/TaylorDiag.jl.git")
+Pkg.add("TaylorDiag")
 using TaylorDiag
 ``` 
 
@@ -89,8 +89,8 @@ taylordiagram([obs,mod,mod2],names)
 - [ ] New skill scores from Taylor 2001
 - [ ] Add RMSD on the plot
 - [ ] List what next: see reference
-
-
+- [ ] Add API
+- [ ] Correlation lines size problem
 ## Contributing
 
 Contributions are welcome. Please make a pull request so the community can enjoy it!
