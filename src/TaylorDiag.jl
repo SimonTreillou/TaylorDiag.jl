@@ -16,4 +16,7 @@ export taylor_verification
 export normalize_std
 include("utils.jl")
 
+export make_yaxis
+include("plotting.jl")
+
 end
