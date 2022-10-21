@@ -16,6 +16,10 @@ function to_polar(C::AbstractArray)
     real.(acos.(C))
 end
 
+function to_polar(C::Number)
+    real(acos(C))
+end
+
 """
     normalize_std(S::AbstractArray)
 

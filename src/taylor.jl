@@ -20,9 +20,10 @@ Compute and plot the Taylor diagram. 4 different versions of the function are av
 - `correlationcolor=:black` : color associated with correlation coefficients (dashed lines, 1/4-circle, etc.)
 - `freRMS=5` : frequency of RMSD lines (grey circles)
 - `normalize=false` :  STD normalization
-
+- `RMSDcolor=:grey` :  RMSD lines and labels colors
+- `ang=pi/2` : angle of the plot (e.g. ang=π/2 then we have 1/4-disc)
 """
-function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey)
+function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey,ang=pi/2)
 
     # Normalize if needed
     if normalize; S = normalize_std(S); end;
@@ -37,45 +38,55 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=6
     # Defining constants: Correlation ticks
     Cticks  = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99]
     CticksP = to_polar(Cticks)
+    filter!(x->x<ang,CticksP)
+    filter!(x->to_polar(x)<ang,Cticks)
 
     # Plotting the figure
-    fig = plot(size=(figsize,figsize),dpi=dpi,grid=false,leg=false)
+    ticks = (range(0,limSTD,5),round.(range(0,limSTD,5),digits=1))
+    fig = Plots.plot(size=(figsize,figsize),dpi=dpi,grid=false,leg=false,xticks=ticks)
     ylims!((0., limSTD*1.01))
     xlims!((0., limSTD*1.02))
-    ylabel!("Standard deviation")
+    xlabel!("Standard deviation",fontsize=11)
+    ylabel!("Standard deviation",fontsize=11)
+    if ang!=pi/2
+        plot!(yaxis=false,yticks=false)
+        ylabel!("")
+        make_yaxis(fig,ang,limSTD,"Standard deviation",ticks)
+    end
 
     # Plotting reference and model points
     for i in eachindex(theta)
         scatter!([cos.(theta[i]).*rho[i]], [sin.(theta[i]).*rho[i]],color=pointcolor)
-        annotate!(cos.(theta[i]).*rho[i]+0.02*limSTD,sin.(theta[i]).*rho[i]+0.02*limSTD,names[i],pointfontsize)
+        annotate!(cos.(theta[i]).*rho[i]+0.02*limSTD,sin.(theta[i]).*rho[i]+0.02*limSTD,name[i],pointfontsize)
     end
 
     # Correlation circle and lines
-    t = -200:(pi/200):(pi/2)
-    plot!(limSTD.*cos.(t), limSTD.*sin.(t), linecolor=correlationcolor)
-    for i in eachindex(Cticks)
+    t = range(0,ang,100)
+    Plots.plot!(limSTD.*cos.(t), limSTD.*sin.(t), linecolor=correlationcolor)
+    for i in eachindex(CticksP)
         x = 0:0.01:cos(CticksP[i])*limSTD
-        plot!(x,x.*tan(CticksP[i]),linecolor=correlationcolor,linestyle=:dashdot,alpha=0.3)
+        Plots.plot!(x,x.*tan(CticksP[i]),linecolor=correlationcolor,linestyle=:dashdot,alpha=0.3)
         if Cticks[i]== 0.
             annotate!(cos(CticksP[i])*limSTD*1.01+0.02*limSTD, sin(CticksP[i])*limSTD*1.01, text(string(Cticks[i]), correlationcolor, :left, 7))
         else
             annotate!(cos(CticksP[i])*limSTD*1.01, cos(CticksP[i])*limSTD*1.01*tan(CticksP[i]),text(string(Cticks[i]), correlationcolor, :left, 7))
         end
     end
-    annotate!(cos(pi/4)*limSTD*1.07,sin(pi/4)*limSTD*1.07, Plots.text("Correlation", 13, correlationcolor, rotation = -45 ))
+    annotate!(cos(ang/2)*limSTD*1.07,sin(ang/2)*limSTD*1.07, Plots.text("Correlation", 13, correlationcolor, rotation = (-90+ang/2*180/pi)))
 
     # RMSD circles
-    maxRMS = sqrt(S[1]^2 + limSTD^2)
-    angRMS = atan(S[1]/limSTD)+pi/2
-    t     = 0:(pi/200):(2*pi)
+    maxRMS = sqrt((limSTD * sin(ang))^2 + (limSTD * cos(ang) - S[1])^2)
+    angRMS = atan( (limSTD * sin(ang)) / (limSTD * cos(ang) - S[1]))
+    #atan(S[1]/limSTD)+pi/2
+    t = range(0,pi,200)
     rx = cos.(theta[1]).*rho[1]
     ry = sin.(theta[1]).*rho[1]
     for i in (0.2*maxRMS):maxRMS/freRMS:(maxRMS*0.9)
         X = i.*cos.(t).+rx
         Y = i.*sin.(t).+ry
-        show = isless.((i.*cos.(t).+rx).^2 + (i.*sin.(t).+ry).^2,limSTD^2)
+        show = isless.(X.^2 + Y.^2,limSTD.^2) .&& isless.(Y,X.*tan(ang))
         ix = findall(x->x==1,show)
-        plot!(X[ix],Y[ix],linecolor=RMSDcolor,linestyle=:dash)
+        Plots.plot!(X[ix],Y[ix],linecolor=RMSDcolor,linestyle=:dash)
         annotate!((i+0.01).*cos.(angRMS).+rx,(i+0.01).*sin.(angRMS).+ry,Plots.text(string(round(i,digits=3)), 6, RMSDcolor, rotation = angRMS* 180/pi - 90))
     end
 
