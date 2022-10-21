@@ -85,12 +85,15 @@ taylordiagram([obs,mod,mod2],names)
 - [x] Clean-up
 - [x] Add plotting options
 - [x] Normalized plot
+- [x] Reduced angle plot
+- [ ] Add examples
+- [ ] Docs
 - [ ] 180° plot
 - [ ] New skill scores from Taylor 2001
-- [ ] Add RMSD on the plot
+- [x] Add RMSD on the plot
 - [ ] List what next: see reference
 - [ ] Add API
-- [ ] Correlation lines size problem
+- [x] Correlation lines size problem
 ## Contributing
 
 Contributions are welcome. Please make a pull request so the community can enjoy it!
