@@ -84,7 +84,7 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=6
     for i in (0.2*maxRMS):maxRMS/freRMS:(maxRMS*0.9)
         X = i.*cos.(t).+rx
         Y = i.*sin.(t).+ry
-        show = isless.(X.^2 + Y.^2,limSTD.^2) .&& isless.(Y,X.*tan(ang))
+        show = isless.(X.^2 + Y.^2,limSTD.^2) .* isless.(Y,X.*tan(ang))
         ix = findall(x->x==1,show)
         Plots.plot!(X[ix],Y[ix],linecolor=RMSDcolor,linestyle=:dash)
         annotate!((i+0.01).*cos.(angRMS).+rx,(i+0.01).*sin.(angRMS).+ry,Plots.text(string(round(i,digits=3)), 6, RMSDcolor, rotation = angRMS* 180/pi - 90))
