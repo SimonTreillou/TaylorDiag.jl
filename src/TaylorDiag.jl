@@ -2,6 +2,8 @@ module TaylorDiag
 
 using Plots
 import Plots: plot, ylabel!, ylims!, xlims!, scatter!, annotate!
+using Measures
+import Measures: mm
 
 export taylordiagram
 include("taylor.jl")
