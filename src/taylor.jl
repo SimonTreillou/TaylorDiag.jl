@@ -23,7 +23,7 @@ Compute and plot the Taylor diagram. 4 different versions of the function are av
 - `RMSDcolor=:grey` :  RMSD lines and labels colors
 - `ang=pi/2` : angle of the plot (e.g. ang=π/2 then we have 1/4-disc)
 """
-function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey,ang=pi/2)
+function taylordiagram(S::AbstractArray,C::AbstractArray,name::Vector{String},mshape::Vector{Symbol};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey,ang=pi/2)
 
     # Normalize if needed
     if normalize; S = normalize_std(S); end;
@@ -43,29 +43,29 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=6
 
     # Plotting the figure
     ticks = (range(0,limSTD,5),round.(range(0,limSTD,5),digits=1))
-    fig = Plots.plot(size=(figsize,figsize),dpi=dpi,grid=false,leg=false,xticks=ticks)
-    ylims!((0., limSTD*1.01))
-    xlims!((0., limSTD*1.02))
+    fig = Plots.plot(size=(figsize,figsize),dpi=dpi,grid=false,leg=false,xticks=ticks,rightmargin=5mm)
+    ylims!((cos(ang)*limSTD*1.01, limSTD*1.01))
+    xlims!((cos(ang)*limSTD*1.02, limSTD*1.02))
     xlabel!("Standard deviation",fontsize=11)
     ylabel!("Standard deviation",fontsize=11)
     if ang!=pi/2
-        plot!(yaxis=false,yticks=false)
+        plot!(yaxis=false,yticks=false,label="")
         ylabel!("")
-        make_yaxis(fig,ang,limSTD,"Standard deviation",ticks)
+        make_yaxis(fig,ang,limSTD,"Standard deviation",ticks,correlationcolor)
     end
 
     # Plotting reference and model points
     for i in eachindex(theta)
-        scatter!([cos.(theta[i]).*rho[i]], [sin.(theta[i]).*rho[i]],color=pointcolor)
+        scatter!([cos.(theta[i]).*rho[i]], [sin.(theta[i]).*rho[i]],color=pointcolor,markershape=mshape[i])
         annotate!(cos.(theta[i]).*rho[i]+0.02*limSTD,sin.(theta[i]).*rho[i]+0.02*limSTD,name[i],pointfontsize)
     end
 
     # Correlation circle and lines
     t = range(0,ang,100)
-    Plots.plot!(limSTD.*cos.(t), limSTD.*sin.(t), linecolor=correlationcolor)
+    Plots.plot!(limSTD.*cos.(t), limSTD.*sin.(t), linecolor=correlationcolor,label="")
     for i in eachindex(CticksP)
         x = 0:0.01:cos(CticksP[i])*limSTD
-        Plots.plot!(x,x.*tan(CticksP[i]),linecolor=correlationcolor,linestyle=:dashdot,alpha=0.3)
+        Plots.plot!(x,x.*tan(CticksP[i]),linecolor=correlationcolor,linestyle=:dashdot,alpha=0.3,label="")
         if Cticks[i]== 0.
             annotate!(cos(CticksP[i])*limSTD*1.01+0.02*limSTD, sin(CticksP[i])*limSTD*1.01, text(string(Cticks[i]), correlationcolor, :left, 7))
         else
@@ -78,7 +78,7 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=6
     maxRMS = sqrt((limSTD * sin(ang))^2 + (limSTD * cos(ang) - S[1])^2)
     angRMS = atan( (limSTD * sin(ang)) / (limSTD * cos(ang) - S[1]))
     #atan(S[1]/limSTD)+pi/2
-    t = range(0,pi,200)
+    t = range(0,pi,500)
     rx = cos.(theta[1]).*rho[1]
     ry = sin.(theta[1]).*rho[1]
     for i in (0.2*maxRMS):maxRMS/freRMS:(maxRMS*0.9)
@@ -86,34 +86,44 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,names;figsize=600,dpi=6
         Y = i.*sin.(t).+ry
         show = isless.(X.^2 + Y.^2,limSTD.^2) .* isless.(Y,X.*tan(ang))
         ix = findall(x->x==1,show)
-        Plots.plot!(X[ix],Y[ix],linecolor=RMSDcolor,linestyle=:dash)
+        Plots.plot!(X[ix],Y[ix],linecolor=RMSDcolor,linestyle=:dash,label="")
         annotate!((i+0.01).*cos.(angRMS).+rx,(i+0.01).*sin.(angRMS).+ry,Plots.text(string(round(i,digits=3)), 6, RMSDcolor, rotation = angRMS* 180/pi - 90))
     end
 
     fig
 end
 
+function taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector{String};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey,ang=pi/2)
+    MS=[:auto for i in eachindex(names)]
+    taylordiagram(S,C,names,MS,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor,ang=ang)
+end
 
 function taylordiagram(S::AbstractArray,C::AbstractArray;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey)
     N = ["Obs"]
     for i in 2:length(S); push!(N,"Mod"*string(i-1)); end
-    taylordiagram(S,C,N,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor)
+    MS=[:auto for i in eachindex(N)]
+    taylordiagram(S,C,N,MS,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor,ang=ang)
+end
+
+function taylordiagram(S::AbstractArray,C::AbstractArray,MS::Vector{Symbol};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey,ang=pi/2)
+    N = ["Obs"]
+    for i in 2:length(S); push!(N,"Mod"*string(i-1)); end
+    taylordiagram(S,C,N,MS,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor,ang=ang)
+end
+
+function taylordiagram(Cs::Union{Vector{Vector{Float64}}, Vector{Vector{Float32}}, Vector{Vector{Float16}}, Vector{Vector{Int64}}}, names::Vector{String};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey,ang=pi/2)
+    S = STD.(Cs)
+    C = [COR(Cs[1],Cs[i]) for i in eachindex(Cs)]
+    MS=[:auto for i in eachindex(names)]
+    taylordiagram(S,C,names,MS,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor,ang=ang)
 end
 
 
-function taylordiagram(Cs::Union{Vector{Vector{Float64}}, Vector{Vector{Float32}}, Vector{Vector{Float16}}, Vector{Vector{Int64}}}, names::Vector{String};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey)
+function taylordiagram(Cs::Union{Vector{Vector{Float64}}, Vector{Vector{Float32}}, Vector{Vector{Float16}}, Vector{Vector{Int64}}};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey,ang=pi/2)
     S = STD.(Cs)
     C = [COR(Cs[1],Cs[i]) for i in eachindex(Cs)]
-
-    taylordiagram(S,C,names,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor)
-end
-
-
-function taylordiagram(Cs::Union{Vector{Vector{Float64}}, Vector{Vector{Float32}}, Vector{Vector{Float16}}, Vector{Vector{Int64}}};figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey)
-    S = STD.(Cs)
-    C = [COR(Cs[1],Cs[i]) for i in eachindex(Cs)]
-
-    taylordiagram(S,C,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor)
+    MS=[:auto for i in eachindex(S)]
+    taylordiagram(S,C,MS,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor,ang=ang)
 end
     
     

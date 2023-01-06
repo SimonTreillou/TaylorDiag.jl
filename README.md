@@ -59,17 +59,21 @@ C = [COR(obs,obs),COR(obs,mod),COR(obs,mod2)]
 # We then plot the Taylor diagram, here without special names added
 taylordiagram(S,C)
 
-# Here with special names added (plot not shown)
-names = ["Data1", "Data2", "Data3"]
-taylordiagram(S,C,names)
-
 # Here with automatic computation of the standard deviations 
 # and correlation coefficients (plot not shown)
 taylordiagram([obs,mod,mod2])
 
-# Here with automatic computation of the standard deviations 
-# and correlation coefficients, and special names (plot not shown)
-taylordiagram([obs,mod,mod2],names)
+# Here with special names added (plot not shown)
+names = ["Data1", "Data2", "Data3"]
+taylordiagram(S,C,names)
+
+# Here with special markers
+markerz = [:star, :circle, :circle]
+taylordiagram(S,C,markerz)
+
+# Here with options and collections directly used as inputs (STD and C computations are automatic)
+Cs = [obs,mod,mod2]
+taylordiagram(Cs;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:red,freRMS=10,normalize=true)
 ```
 
 ![plot](./tutorial-taylor-diagram.png)
@@ -88,7 +92,7 @@ taylordiagram([obs,mod,mod2],names)
 - [x] Reduced angle plot
 - [ ] Add examples
 - [ ] Docs
-- [ ] 180° plot
+- [ ] Improve 180° plot
 - [ ] New skill scores from Taylor 2001
 - [x] Add RMSD on the plot
 - [ ] List what next: see reference
