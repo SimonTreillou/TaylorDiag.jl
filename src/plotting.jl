@@ -11,7 +11,7 @@ Plot an axis from scratch when you want the y-axis to have an <90° angle with r
 - `label` : label of the axis
 - `ticks` : ticks of the axis (of the form Tuple : (ticks, tickslabels))
 """
-function make_yaxis(fig,ang::Number,max::Number,label::String,ticks::Tuple)
+function make_yaxis(fig,ang::Number,max::Number,label::String,ticks::Tuple,correlationcolor::Symbol)
     Y=range(0,max*1.02,10)
     plot!(fig,Y.*cos(ang),Y.*sin(ang),color=:black,width=:1)
 
