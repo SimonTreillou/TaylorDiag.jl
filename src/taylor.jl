@@ -46,17 +46,26 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,name::Vector{String},ms
     fig = Plots.plot(size=(figsize,figsize),dpi=dpi,grid=false,leg=false,xticks=ticks,rightmargin=5mm)
     ylims!((cos(ang)*limSTD*1.01, limSTD*1.01))
     xlims!((cos(ang)*limSTD*1.02, limSTD*1.02))
-    xlabel!("Standard deviation",fontsize=11)
-    ylabel!("Standard deviation",fontsize=11)
+    if !normalize
+        xlabel!("Standard deviation",fontsize=11)
+        ylabel!("Standard deviation",fontsize=11)
+    else
+        xlabel!("Normalized standard deviation",fontsize=11)
+        ylabel!("Normalized standard deviation",fontsize=11)
+    end
     if ang!=pi/2
         plot!(yaxis=false,yticks=false,label="")
         ylabel!("")
-        make_yaxis(fig,ang,limSTD,"Standard deviation",ticks,correlationcolor)
+        if !normalize
+            make_yaxis(fig,ang,limSTD,"Standard deviation",ticks,correlationcolor)
+        else
+            make_yaxis(fig,ang,limSTD,"Normalized standard deviation",ticks,correlationcolor)
+        end
     end
 
     # Plotting reference and model points
     for i in eachindex(theta)
-        scatter!([cos.(theta[i]).*rho[i]], [sin.(theta[i]).*rho[i]],color=pointcolor,markershape=mshape[i])
+        scatter!([cos.(theta[i]).*rho[i]], [sin.(theta[i]).*rho[i]],color=pointcolor,markershape=mshape[i],label="")
         annotate!(cos.(theta[i]).*rho[i]+0.02*limSTD,sin.(theta[i]).*rho[i]+0.02*limSTD,name[i],pointfontsize)
     end
 
@@ -81,9 +90,9 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,name::Vector{String},ms
     t = range(0,pi,500)
     rx = cos.(theta[1]).*rho[1]
     ry = sin.(theta[1]).*rho[1]
-    for i in (0.2*maxRMS):maxRMS/freRMS:(maxRMS*0.9)
-        X = i.*cos.(t).+rx
-        Y = i.*sin.(t).+ry
+    for i in ticks[1][1:end-1] #(0.2*maxRMS):maxRMS/freRMS:(maxRMS*0.9)   ### depending what type of circles
+        X = i.*cos.(t)#.+rx
+        Y = i.*sin.(t)#.+ry
         show = isless.(X.^2 + Y.^2,limSTD.^2) .* isless.(Y,X.*tan(ang))
         ix = findall(x->x==1,show)
         Plots.plot!(X[ix],Y[ix],linecolor=RMSDcolor,linestyle=:dash,label="")
@@ -98,7 +107,7 @@ function taylordiagram(S::AbstractArray,C::AbstractArray,names::Vector{String};f
     taylordiagram(S,C,names,MS,figsize=figsize,dpi=dpi,pointcolor=pointcolor,pointfontsize=pointfontsize,correlationcolor=correlationcolor,freRMS=freRMS,normalize=normalize,RMSDcolor=RMSDcolor,ang=ang)
 end
 
-function taylordiagram(S::AbstractArray,C::AbstractArray;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey)
+function taylordiagram(S::AbstractArray,C::AbstractArray;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlationcolor=:black,freRMS=5,normalize=false,RMSDcolor=:grey,ang=pi/2)
     N = ["Obs"]
     for i in 2:length(S); push!(N,"Mod"*string(i-1)); end
     MS=[:auto for i in eachindex(N)]
