@@ -1,7 +1,7 @@
 name = "TaylorDiag"
 uuid = "39da1b83-8f04-4f20-a181-3ec16610cec7"
 authors = ["Simon Treillou"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -13,6 +13,8 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 CSV = "0.10"
+Measures = "0.3"
+DataFrames = "1"
 Plots = "1"
 julia = "1"
 
