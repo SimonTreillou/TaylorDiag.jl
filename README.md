@@ -90,6 +90,7 @@ taylordiagram(Cs;figsize=600,dpi=600,pointcolor=:black,pointfontsize=8,correlati
 - [x] Add plotting options
 - [x] Normalized plot
 - [x] Reduced angle plot
+- [ ] Use RecipesBase.jl
 - [ ] Add examples
 - [ ] Docs
 - [ ] Improve 180° plot
